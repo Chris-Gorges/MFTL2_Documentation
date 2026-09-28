@@ -1,0 +1,263 @@
+# ══════════════════════════════════════════════════════════════════════════════
+#  MFTL -- MkDocs / Material configuration
+#
+#  This site is the MANUAL. The Doxygen manual is the machine-generated
+#  REFERENCE, and it is mounted inside this site at /doxygen/ by
+#  mkdocs/hooks.py, so there is one deployable artefact and one URL.
+#
+#  This repository holds NO C source. The library it documents is a separate
+#  checkout, located at build time by mftl_paths.py, and every path below that
+#  points into it -- mkdoxy's `src-dirs`, the watch list, the prose sources --
+#  is resolved from that one answer rather than written here. There is
+#  therefore nothing machine-specific in this file.
+#
+#  Nothing here duplicates prose. Every guide, module-theory and analysis page
+#  is generated at build time from Markdown that already exists -- this
+#  repository's pages/, the library's eleven src/*/README.md and its
+#  measurement document docs/analysis.md -- by mkdocs/gen_pages.py, and the API reference is
+#  generated from Doxygen XML by mkdoxy, using a Doxyfile derived from
+#  doxygen/Doxyfile.in. Both manuals therefore read the same sources with the
+#  same settings, which is the rule the Doxyfile template already follows for
+#  its two build routes.
+# ══════════════════════════════════════════════════════════════════════════════
+
+site_name: MFTL
+site_description: >-
+  MultiFlow Triangulation Library -- an HPC C11 library for distributed-memory
+  manipulation of triangulated surface meshes, for front tracking and
+  immersed-boundary CFD.
+site_author: Christian Gorges
+copyright: Copyright &copy; MFTL2 &mdash; MultiFlow Triangulation Library
+
+docs_dir: manual
+site_dir: build/site
+use_directory_urls: true
+
+# ──────────────────────────────────────────────────────────────────────────────
+#  Theme
+# ──────────────────────────────────────────────────────────────────────────────
+theme:
+  name: material
+  custom_dir: mkdocs/overrides
+  language: en
+  logo: assets/logo.svg
+  favicon: assets/favicon.svg
+  icon:
+    repo: fontawesome/brands/git-alt
+    annotation: material/arrow-right-circle
+  font:
+    text: Inter
+    code: JetBrains Mono
+  palette:
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Follow the system theme
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - announce.dismiss
+    - content.code.annotate
+    - content.code.copy
+    - content.tabs.link
+    - content.tooltips
+    - navigation.footer
+    - navigation.indexes
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.sections
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.top
+    - navigation.tracking
+    - search.highlight
+    - search.share
+    - search.suggest
+    - toc.follow
+
+extra_css:
+  - stylesheets/mftl.css
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
+
+extra:
+  generator: false
+  status:
+    new: Recently added
+    deprecated: Not implemented yet
+
+# ──────────────────────────────────────────────────────────────────────────────
+#  Markdown
+#
+#  Deliberately NOT enabled: smartsymbols, tilde, caret, mark and critic. Each
+#  of them claims a character this library's prose uses literally -- `~128 KB`,
+#  `a^2`, `ops == 0`, `4/6/19/17` -- and the failure is silent reformatting
+#  rather than an error.
+# ──────────────────────────────────────────────────────────────────────────────
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+      permalink_title: Link to this section
+      toc_depth: 3
+      slugify: !!python/object/apply:pymdownx.slugs.slugify {kwds: {case: lower}}
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+      use_pygments: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.snippets:
+      check_paths: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+
+# ──────────────────────────────────────────────────────────────────────────────
+#  Plugins
+#
+#  ORDER MATTERS. mkdoxy runs Doxygen and writes the API pages in its on_files
+#  event; gen-files resolves @ref / #Symbol / Function() against the XML mkdoxy
+#  just produced. Swap the two and every API cross-reference in the prose
+#  degrades to a plain code span on the first build of a clean tree.
+# ──────────────────────────────────────────────────────────────────────────────
+plugins:
+  - search:
+      separator: '[\s\-,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;'
+  - mkdoxy:
+      save-api: build/mkdocs/.doxy
+      full-doc: true
+      projects:
+        mftl:
+          # PLACEHOLDER. mkdoxy assigns `src-dirs` straight to Doxygen's INPUT,
+          # and the library it must read is not in this repository, so
+          # mkdocs/hooks.py replaces this value in on_config with the resolved
+          # absolute paths (<library>/include, <library>/src, doxygen/). mkdoxy
+          # reads the option in on_files, which is strictly later, and the
+          # option is `required` -- hence a real directory here rather than an
+          # empty string.
+          src-dirs: doxygen
+          full-doc: true
+          api-path: api
+          doxy-cfg-file: build/mkdocs/Doxyfile.api
+  - gen-files:
+      scripts:
+        - mkdocs/gen_pages.py
+  - glightbox:
+      touchNavigation: true
+      effect: zoom
+      zoomable: true
+  - minify:
+      minify_html: true
+
+hooks:
+  - mkdocs/hooks.py
+
+# ──────────────────────────────────────────────────────────────────────────────
+#  Live reload
+#
+#  `mkdocs serve` watches docs_dir by default, and docs_dir holds almost none of
+#  this site's content. These are this repository's trees that gen_pages.py and
+#  mkdoxy actually read.
+#
+#  The LIBRARY's trees -- its include/, src/ and its measurement document --
+#  cannot be named here, because where they are is only known once mftl_paths.py
+#  has resolved it. `build_mkdocs.py --serve` adds them with `mkdocs serve -w`,
+#  so editing a module README or a doc comment still reloads the browser.
+# ──────────────────────────────────────────────────────────────────────────────
+watch:
+  - pages
+  - mkdocs
+  - doxygen
+
+# ──────────────────────────────────────────────────────────────────────────────
+#  Validation
+#
+#  mkdoxy generates ~170 API pages and only the index pages of that set belong
+#  in the navigation, so `omitted_files` is silenced. Anchors are reported but
+#  not fatal: Doxygen gives an anonymous enum a machine-generated id that no
+#  heading can carry.
+# ──────────────────────────────────────────────────────────────────────────────
+validation:
+  nav:
+    omitted_files: ignore
+    not_found: warn
+    absolute_links: ignore
+  links:
+    not_found: warn
+    anchors: info
+    absolute_links: ignore
+    unrecognized_links: info
+
+# ──────────────────────────────────────────────────────────────────────────────
+#  Navigation
+# ──────────────────────────────────────────────────────────────────────────────
+nav:
+  - Home: index.md
+  - Overview: overview.md
+  - Guide:
+      - guide/index.md
+      - Building & testing: guide/building.md
+      - Architecture: guide/architecture.md
+      - The timestep: guide/timestep.md
+      - Invariants: guide/invariants.md
+  - Modules:
+      - modules/index.md
+      - arrayfunctions: modules/arrayfunctions.md
+      - object: modules/object.md
+      - topology: modules/topology.md
+      - geometry: modules/geometry.md
+      - mesh_creation: modules/mesh_creation.md
+      - ensemble: modules/ensemble.md
+      - communication: modules/communication.md
+      - remeshing: modules/remeshing.md
+      - bvh: modules/bvh.md
+      - topology_change: modules/topology_change.md
+      - io: modules/io.md
+  - Analysis:
+      - analysis/index.md
+      - Measurements: analysis/measurements.md
+  - API:
+      - api/index.md
+      - Topics: api/modules.md
+      - Data structures: api/annotated.md
+      - Struct fields: api/class_members.md
+      - Source files: api/files.md
+      - Functions: api/functions.md
+      - Macros: api/macros.md
+      - Variables: api/variables.md
+      - Doxygen manual: api/doxygen-manual.md

@@ -1,0 +1,16 @@
+{#-
+  Theme override for the MFTL manual.
+
+  Only the announcement bar is customised. Everything else is Material's own
+  template, so a theme upgrade cannot silently drop a block this file forgot to
+  re-emit.
+-#}
+{% extends "base.html" %}
+
+{% block announce %}
+  <div class="mftl-announce">
+    New here? {% set ext = '/' if config.use_directory_urls else '.html' %}
+    <a href="{{ ('overview' ~ ext) | url }}">Start with the overview</a>, and
+    <a href="{{ ('guide/architecture' ~ ext) | url }}">read the one idea</a> before changing anything structural.
+  </div>
+{% endblock %}

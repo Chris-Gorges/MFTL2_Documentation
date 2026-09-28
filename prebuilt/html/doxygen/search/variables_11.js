@@ -1,0 +1,26 @@
+var searchData=
+[
+  ['s_0',['s',['../structsbuf.html#ab51cd24d34f6509eafb5e059f4c7d10e',1,'sbuf']]],
+  ['scratch_1',['scratch',['../structcomm__workspace.html#a234e71ec3b66cc861222c7123af7acc2',1,'comm_workspace']]],
+  ['seen_2',['seen',['../structholder__probe.html#a5a61fecc5425945fd32faafc29a0bc69',1,'holder_probe']]],
+  ['self_3',['self',['../structnarrow__ctx.html#a2220cff6900df8a6ab26c55c05b7ec3e',1,'narrow_ctx::self'],['../structnbhood.html#a7146575016667a223b63df98d88eca84',1,'nbhood::self']]],
+  ['self_5fpairs_4',['self_pairs',['../struct_m_f_t_l___b_v_h_build_params.html#a0bd01bc6bce3822df0c03e9cf2eaf66d',1,'MFTL_BVHBuildParams::self_pairs'],['../struct_m_f_t_l___spatial_halo.html#a0bd01bc6bce3822df0c03e9cf2eaf66d',1,'MFTL_SpatialHalo::self_pairs']]],
+  ['send_5fbufs_5',['send_bufs',['../struct_m_f_t_l___exchange.html#a4b7de810bb6d9ecc925c10305aca72d6',1,'MFTL_Exchange']]],
+  ['send_5fcounts_6',['send_counts',['../structcomm__workspace.html#ad2bc41b132bd70487b8955671377c6da',1,'comm_workspace']]],
+  ['send_5ftris_7',['send_tris',['../structcomm__workspace.html#ac4074e6ea805f2319170fa8604d5565a',1,'comm_workspace']]],
+  ['send_5fverts_8',['send_verts',['../structcomm__workspace.html#ab37b8e33e2010084563b8d1aaf9ec23e',1,'comm_workspace']]],
+  ['serial_5fgather_5fmax_5ftriangles_9',['serial_gather_max_triangles',['../struct_m_f_t_l___remesh_parameters.html#aaf2585c6df0659c9df2e2cb412c47794',1,'MFTL_RemeshParameters']]],
+  ['shift_10',['shift',['../structnarrow__ctx.html#a8edd6a8d5c1166edc8891ee4dd7ea8af',1,'narrow_ctx']]],
+  ['size_11',['size',['../structpair__stack.html#a439227feff9d7f55384e8780cfc2eb82',1,'pair_stack::size'],['../structmftl__int__buffer.html#a439227feff9d7f55384e8780cfc2eb82',1,'mftl_int_buffer::size'],['../structpair__list.html#a439227feff9d7f55384e8780cfc2eb82',1,'pair_list::size'],['../structsized__body.html#a2fd48b7cad94454d49e9be8785a32135',1,'sized_body::size']]],
+  ['smooth_5fiterations_12',['smooth_iterations',['../struct_m_f_t_l___remesh_parameters.html#a99d15a71be006e56ab8e2b4cccb2829c',1,'MFTL_RemeshParameters']]],
+  ['smooth_5fmax_5fstep_5ffraction_13',['smooth_max_step_fraction',['../struct_m_f_t_l___remesh_parameters.html#a79eddc9d13b7a88d3848affb775f12db',1,'MFTL_RemeshParameters']]],
+  ['smooth_5fmode_14',['smooth_mode',['../struct_m_f_t_l___remesh_parameters.html#a6eeea53104c10039f21e6c6a0a68144d',1,'MFTL_RemeshParameters']]],
+  ['smooth_5frelaxation_15',['smooth_relaxation',['../struct_m_f_t_l___remesh_parameters.html#a5f9cc62b6ae81944ccd71b7bed803a0f',1,'MFTL_RemeshParameters']]],
+  ['spacing_16',['spacing',['../struct_m_f_t_l___sdf_grid.html#a35e6d7fcfe1e4462b9552d0ca61f4445',1,'MFTL_SdfGrid::spacing'],['../struct_m_f_t_l___topo_lattice.html#a35e6d7fcfe1e4462b9552d0ca61f4445',1,'MFTL_TopoLattice::spacing']]],
+  ['states_17',['states',['../structcomm__workspace.html#abab36712b61c4c2f19af11980996a9b0',1,'comm_workspace']]],
+  ['strategy_18',['strategy',['../struct_m_f_t_l___remesh_stats.html#a5e56f8e8bc9ae69358ae0c0b2a633f91',1,'MFTL_RemeshStats']]],
+  ['sum_5farea_19',['sum_area',['../structupdate__accumulators.html#ae971171789bfe1533f96a2d5e534341e',1,'update_accumulators']]],
+  ['sum_5fesq_20',['sum_esq',['../structupdate__accumulators.html#abeb5f8e29be0743499cd6b334e139cbc',1,'update_accumulators']]],
+  ['sum_5fq_21',['sum_q',['../structupdate__accumulators.html#a7fa2545207eb6eded884c1b02b35cb2f',1,'update_accumulators']]],
+  ['surf_22',['surf',['../struct_m_f_t_l___topo_cluster.html#a8703104668e0361a9f7b1acadc7b7940',1,'MFTL_TopoCluster']]]
+];
