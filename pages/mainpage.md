@@ -24,7 +24,7 @@ performs breakup and coalescence, and writes the result to VTK.
 | @subpage mftl_page_building | How to configure, build, test, and generate this manual |
 | @subpage mftl_page_timestep | The per-timestep call order, and the three things in it that are silent when wrong |
 | @subpage mftl_page_invariants | Properties that must survive any change, each with the test that guards it |
-| @subpage mftl_page_modules | The eleven implementation modules, each with its own theory page |
+| @subpage mftl_page_modules | The fourteen implementation modules, each with its own theory page |
 
 The reference material is reachable from the navigation bar: **Modules** groups
 the API by architectural layer, **Data Structures** lists every struct, and
@@ -62,6 +62,9 @@ the API by architectural layer, **Data Structures** lists every struct, and
 - **Topology changes** — breakup and coalescence by opposing-triangle detection,
   union-field signed distance, distributed marching cubes and a Newton volume
   correction, identical at every process count
+- **Run configuration** — every runtime option in one struct, one settings file
+  per simulation plus `section.key=value` overrides, validated with line numbers
+  and "did you mean" suggestions, identical on every rank by construction
 
 **Absent:** open-surface generators (other than a level set through
 MFTLBuildMeshFromLevelSet()), GTS I/O, topological ghost-layer growth,
@@ -110,6 +113,31 @@ Every MFTL call above except MFTLObjectCreate() and MFTLVtkDefaults() is
 **collective**. After MFTLRedistribute() a rank holds an #MFTL_Object only for
 the bodies it holds entities of, so pointers are re-fetched by body id with
 MFTLEnsembleFindLocalObject(); see @ref mftl_page_timestep.
+
+### The same program, configured by a file
+
+A simulation normally takes its options from a settings file rather than from
+literals. Each library call then takes its block straight out of #MFTL_Settings:
+
+```c
+MFTL_Settings cfg;
+MFTLSettingsDefaults(&cfg);
+MFTLSettingsLoad(&cfg, "run.toml", MPI_COMM_WORLD);        /* rank 0 reads, every rank parses */
+MFTLSettingsLoadArgs(&cfg, argc, argv, MPI_COMM_WORLD);    /* remesh.every=2 on the command line */
+
+MFTL_Ensemble *ens = MFTLSettingsCreateEnsemble(&cfg, MPI_COMM_WORLD);   /* [domain] */
+MFTL_Object *drop = MFTLObjectCreate(0);
+MFTLEnsembleAddObject(ens, drop);
+MFTLGenerateSphere(drop, cfg.sphere.center, cfg.sphere.radius, cfg.sphere.refinements);
+MFTLSettingsResolve(&cfg, ens);                            /* lengths derived from the mesh */
+
+MFTLRedistribute(ens);
+MFTLRemeshEnsemble(ens, &cfg.remesh.params, &stats);
+MFTLWriteVtu(ens, cfg.output.prefix, &cfg.output.vtk);
+```
+
+Every key, its default and what it means: @ref mftl_mod_settings, and
+`mftl_settings template` prints them as an annotated file to start from.
 
 ---
 

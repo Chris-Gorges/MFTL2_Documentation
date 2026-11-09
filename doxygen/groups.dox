@@ -758,3 +758,114 @@
  * @see @ref mftl_mod_topology_change for the full derivation, the design
  * alternatives and what each test guards.
  */
+
+/**
+ * @defgroup mftl_correction Front corrections
+ * @ingroup mftl_modules
+ *
+ * @brief Volume-conserving corrections of a front between flow steps: TSUR3D
+ *        undulation removal and the Newton volume correction.
+ *
+ * ## Outside the remesher, on purpose
+ *
+ * Both move vertices along the surface normal, and both are calls a solver
+ * makes in its own loop. The remesher's Phong back-projection moves every
+ * smoothed vertex back onto the surface its call received, so a normal
+ * correction made inside a remesh call would be undone by the same call.
+ *
+ * ## TSUR3D
+ *
+ * Per edge, both ends move along one smoothed normal to the common height
+ * \f$h = (h_a P_a + h_b P_b)/(P_a + P_b)\f$, with \f$P\f$ the fans' areas
+ * projected normal to it: the published \f$(V_1+V_2)/(V_1/h_1+V_2/h_2)\f$ with
+ * \f$V_i/h_i = P_i/3\f$ cancelled, which removes its 0/0 on a flat edge. Each
+ * operation conserves the enclosed volume exactly. Distributed with no gather:
+ * rank-private edges first, then colour rounds no two neighbouring ranks share.
+ *
+ * ## The volume correction
+ *
+ * A uniform offset along the area-weighted vertex normals, by Newton's method
+ * on the exact first variation of the volume, restoring each body's
+ * #MFTL_Object::reference_volume, which travels with the body and which a
+ * topology change hands on.
+ *
+ * @note **All of the module's own MPI is in one file**,
+ * `src/correction/correction_comm.c`.
+ *
+ * @see @ref mftl_mod_correction for the derivation, the distributed schedule
+ * and the measurements.
+ */
+
+/**
+ * @defgroup mftl_coupling Coupling to a flow solver
+ * @ingroup mftl_modules
+ *
+ * @brief Interpolation from a flow solver's samples to surface markers, and its
+ *        exact transpose, spreading back -- for any solver, any decomposition.
+ *
+ * ## One operator, two directions
+ *
+ * Every bound marker gets one row of weights over the samples its kernel
+ * reaches, moment-corrected to reproduce linear fields; spreading applies the
+ * SAME stored rows transposed, so \f$u^T b = U^T F\f$ to round-off.
+ *
+ * ## Coverage is proved, not assumed
+ *
+ * A lattice is declared globally, so a request box's sample count is known and
+ * compared with what the owners report; point sets are certified by their
+ * owners. Anything missing is NEED_COVERAGE on every rank, never a
+ * renormalised row.
+ *
+ * @note **All of the module's MPI is in one file**,
+ * `src/coupling/coupling_comm.c`.
+ *
+ * @see @ref mftl_mod_coupling for the derivation, the solver loop, the LeVeque
+ * measurements and what of the plan is not implemented.
+ */
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ * Layer 4 -- Run configuration
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+/**
+ * @defgroup mftl_configuration Layer 4 &mdash; Run configuration
+ *
+ * @brief The one header that sees every module's parameter block.
+ *
+ * A layer-3 module header never includes another module's, so the struct that
+ * gathers all of their parameter blocks cannot live at layer 3. It sits alone
+ * above them, and below only the application umbrella `mftl_core.h`.
+ */
+
+/**
+ * @defgroup mftl_settings Settings: every runtime option in one struct
+ * @ingroup mftl_configuration
+ *
+ * @brief #MFTL_Settings, filled from a settings file and the command line.
+ *
+ * ## One struct of the blocks the modules already take
+ *
+ * Each section embeds its module's own parameter block, so a call site passes
+ * `&cfg.remesh.params`, `&cfg.topology.options`, `&cfg.contact.params` or
+ * `&cfg.output.vtk`. No module reads the settings on its own: a function still
+ * takes exactly the block it needs.
+ *
+ * ## Declared once
+ *
+ * Every key is one `KEY(...)` line in `src/settings/settings_keys.c` -- type,
+ * member, default, range, choices, summary -- and the parser, the range checks,
+ * MFTLSettingsDefaults(), MFTLSettingsWrite() and the manual's settings
+ * reference are all derived from that table. Unknown keys, wrong types, values
+ * out of range and duplicate keys are errors naming the file, the line and the
+ * key that was probably meant.
+ *
+ * ## Identical on every rank
+ *
+ * MFTLSettingsLoad() reads on rank 0 and broadcasts the TEXT, so every rank
+ * parses the same bytes to the same struct and the same verdict;
+ * MFTLSettingsResolve() and MFTLSettingsCreateEnsemble() verify agreement with
+ * one reduction and name the first key that differs.
+ *
+ * @see @ref mftl_mod_settings for the file format, the call sequence, the
+ * values derived from the mesh and how to add an option.
+ */

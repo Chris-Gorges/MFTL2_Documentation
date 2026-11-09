@@ -13,7 +13,7 @@ checkout -- found by ``mftl_paths.resolve()`` from ``--source-dir``,
 answer is exported to every subprocess, so the Doxygen pass, the hooks and the
 page generator all read the same tree.
 
-Nothing about the site is a second copy of anything. The guide pages, the eleven
+Nothing about the site is a second copy of anything. The guide pages, the twelve
 module theory chapters and the measurement document are generated at
 build time from ``pages/*.md`` here and ``src/<module>/README.md`` /
 ``docs/analysis.md`` in the library -- the same files Doxygen reads -- by

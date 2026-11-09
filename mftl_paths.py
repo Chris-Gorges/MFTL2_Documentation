@@ -1,7 +1,7 @@
 """Locate the MFTL library tree that this documentation describes.
 
 This repository holds no C source. Both manuals are generated from a *separate*
-checkout of the library -- its headers, its sources, its doc comments, its eleven
+checkout of the library -- its headers, its sources, its doc comments, its twelve
 module ``README.md`` files and its measurement document -- so every entry
 point here needs one answer to one question: where is that checkout?
 

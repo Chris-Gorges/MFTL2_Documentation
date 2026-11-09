@@ -13,7 +13,7 @@
 #
 #  Nothing here duplicates prose. Every guide, module-theory and analysis page
 #  is generated at build time from Markdown that already exists -- this
-#  repository's pages/, the library's eleven src/*/README.md and its
+#  repository's pages/, the library's twelve src/*/README.md and its
 #  measurement document docs/analysis.md -- by mkdocs/gen_pages.py, and the API reference is
 #  generated from Doxygen XML by mkdoxy, using a Doxyfile derived from
 #  doxygen/Doxyfile.in. Both manuals therefore read the same sources with the
@@ -92,6 +92,7 @@ extra_css:
 
 extra_javascript:
   - javascripts/mathjax.js
+  - javascripts/settings-filter.js
   - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
 
 extra:
@@ -235,6 +236,7 @@ nav:
       - Architecture: guide/architecture.md
       - The timestep: guide/timestep.md
       - Invariants: guide/invariants.md
+  - Settings: settings.md
   - Modules:
       - modules/index.md
       - arrayfunctions: modules/arrayfunctions.md
@@ -247,7 +249,10 @@ nav:
       - remeshing: modules/remeshing.md
       - bvh: modules/bvh.md
       - topology_change: modules/topology_change.md
+      - correction: modules/correction.md
+      - coupling: modules/coupling.md
       - io: modules/io.md
+      - settings: modules/settings.md
   - Analysis:
       - analysis/index.md
       - Measurements: analysis/measurements.md

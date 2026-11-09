@@ -8,9 +8,13 @@ MkDocs site as virtual pages, rewritten by :mod:`doxymd`.
 The sources come from TWO repositories and the split is deliberate:
 
 * this one contributes the guide prose, ``pages/*.md``;
-* the LIBRARY contributes what belongs next to the code -- the eleven
+* the LIBRARY contributes what belongs next to the code -- the fourteen
   ``src/<module>/README.md`` theory chapters and the ``docs/analysis.md``
-  measurement document, which some fifty source comments cite by path.
+  measurement document, which some fifty source comments cite by path;
+* and one page is GENERATED rather than converted: the settings reference, from
+  the library's key table ``src/settings/settings_keys.c`` (see
+  :mod:`settings_page`), which is also what the library's parser, defaults and
+  template are derived from.
 
 Nothing is copied on disk.  There is one source of truth per subject, and both
 manuals are built from it, which is the same rule the Doxyfile template follows
@@ -42,6 +46,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import doxymd  # noqa: E402
 import doxyxml  # noqa: E402
 import mftl_paths  # noqa: E402
+import settings_page  # noqa: E402
 
 #: Root of this documentation repository.
 DOCS_ROOT = mftl_paths.docs_root()
@@ -67,7 +72,7 @@ GUIDE_PAGES: list[tuple[str, str]] = [
     ("pages/analysis.md", "analysis/index.md"),
 ]
 
-#: The eleven module theory pages, in the layer order ``pages/modules.md``
+#: The module theory pages, in the layer order ``pages/modules.md``
 #: presents them.  Each is one ``src/<dir>/README.md`` in the LIBRARY.
 MODULE_DIRS: list[str] = [
     "arrayfunctions",
@@ -80,7 +85,10 @@ MODULE_DIRS: list[str] = [
     "remeshing",
     "bvh",
     "topology_change",
+    "correction",
+    "coupling",
     "io",
+    "settings",
 ]
 
 #: The measurement document.  Relative to the LIBRARY, where it stays: it is
@@ -168,6 +176,16 @@ def main() -> None:
         with open(path, encoding="utf-8") as handle:
             sources[path] = handle.read()
         doxymd.harvest_anchors(sources[path], page, index)
+
+    # The settings reference has no Markdown source: it is rendered from the key
+    # table, and from then on is a page like the others.
+    settings_md = settings_page.generate(SOURCE_ROOT)
+    if settings_md is not None:
+        settings_source = settings_page.KEYS_SOURCE.replace(os.sep, "/")
+        path = os.path.join(SOURCE_ROOT, settings_page.KEYS_SOURCE)
+        sources[path] = settings_md
+        pages.append((SOURCE_ROOT, settings_source, settings_page.PAGE))
+        doxymd.harvest_anchors(settings_md, settings_page.PAGE, index)
 
     for root, source, page in pages:
         path = os.path.join(root, source)

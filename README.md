@@ -2,8 +2,12 @@
 
 The manual of **MFTL2** (MultiFlow Triangulation Library), and the tooling that
 builds it. This repository contains no C source: it reads the library from a
-separate checkout of [MFTL2](https://git.multiflow.org/software/MFTL2), normally
+separate checkout of [MFTL2](https://github.com/Chris-Gorges/MFTL2), normally
 the sibling directory `../MFTL2`.
+
+**Read it online: <https://chris-gorges.github.io/MFTL2/>** — rebuilt from MFTL2's
+`main` and this repository by MFTL2's `Docs` workflow, with `--strict`, so the
+published manual is also the proof that both build with zero warnings.
 
 ## View the manual in your browser
 
@@ -55,7 +59,7 @@ changed and is up in about a second.
 `docs/analysis.md`, are kept out of the MFTL2 repository, so a fresh clone has
 none and the manual leaves the section out cleanly — no menu entry, no dead
 links, zero warnings. A checkout that does have the file gets the section.
-`prebuilt/` always leaves it out, because it is published
+The published site and an export to `prebuilt/` always leave it out
 (`python3 export_manual.py --with-measurements` for a private export).
 
 ```bash
@@ -63,16 +67,16 @@ python3 view_manual.py --check      # only report what is present and what is mi
 python3 view_manual.py --clean      # something looks stale: delete build/ and start over
 python3 view_manual.py --no-graphs  # much faster, without the Graphviz graphs
 python3 view_manual.py --live       # live reload while editing prose
-python3 view_manual.py --prebuilt   # the committed offline copy (below) -- needs nothing
+python3 view_manual.py --prebuilt   # the offline copy export_manual.py wrote (below)
 python3 view_manual.py --help       # all options
 ```
 
-**Nothing installed at all?** `prebuilt/` holds a copy for reading straight from
-disk: [`prebuilt/html/index.html`](prebuilt/html/index.html) (the web manual,
-search and formulas work offline; the Doxygen manual with its graphs is at
-[`prebuilt/html/doxygen/index.html`](prebuilt/html/doxygen/index.html)) and
-[`prebuilt/MFTL_Manual.pdf`](prebuilt/MFTL_Manual.pdf). `prebuilt/README.md` says
-which library commit it was built from.
+**Nothing installed at all?** Read the [online manual](https://chris-gorges.github.io/MFTL2/).
+For reading offline, `python3 export_manual.py` writes `prebuilt/html/index.html`
+(search and formulas work from disk; the Doxygen manual with its graphs is at
+`prebuilt/html/doxygen/index.html`) and `prebuilt/MFTL_Manual.pdf`, and
+`prebuilt/README.md` says which library commit it was built from. `prebuilt/` is
+not versioned: the published site replaced the committed copy.
 
 **Troubleshooting**
 
@@ -138,7 +142,7 @@ file that only exists to *render* documentation lives here:
 | Stays with the library | Lives here |
 |---|---|
 | Doxygen comments in `include/` and `src/**` | `doxygen/Doxyfile.in` and everything that runs it |
-| the eleven `src/<module>/README.md` theory chapters | `pages/*.md`, the guide prose |
+| the fourteen `src/<module>/README.md` theory chapters | `pages/*.md`, the guide prose |
 | the measurement document `docs/analysis.md` | `mkdocs/`, `manual/`, `mkdocs.yml`, `prebuilt/` |
 | where a figure goes: `<!-- figure: name ... -->` in the chapter | the figure itself: `figures/` draws it, `images/` holds it |
 

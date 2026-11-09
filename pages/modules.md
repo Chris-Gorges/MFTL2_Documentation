@@ -1,4 +1,4 @@
-The eleven modules {#mftl_page_modules}
+The fourteen modules {#mftl_page_modules}
 ==================
 
 [TOC]
@@ -21,7 +21,10 @@ and they are also the first thing to read in the repository itself.
 | `src/remeshing/` | @ref mftl_remeshing.h | @subpage mftl_mod_remeshing | 3 |
 | `src/bvh/` | @ref mftl_bvh.h | @subpage mftl_mod_bvh | 3 |
 | `src/topology_change/` | @ref mftl_topology_change.h | @subpage mftl_mod_topology_change | 3 |
+| `src/correction/` | @ref mftl_correction.h | @subpage mftl_mod_correction | 3 |
+| `src/coupling/` | @ref mftl_coupling.h | @subpage mftl_mod_coupling | 3 |
 | `src/io/` | @ref mftl_io.h | @subpage mftl_mod_io | 3 |
+| `src/settings/` | @ref mftl_settings.h | @subpage mftl_mod_settings | 4 |
 
 ---
 
@@ -32,8 +35,11 @@ include headers from a strictly lower layer (@ref arch_layering).
 
 ```
                         ┌──────────────┐
-                        │ mftl_core.h  │   layer 4, application only
+                        │ mftl_core.h  │   layer 5, application only
                         └──────┬───────┘
+                      ┌────────┴────────┐
+                      │ mftl_settings.h │   layer 4, sees every module's parameters
+                      └────────┬────────┘
       ┌──────────┬──────────┬──┴───────┬────────────┬───────────┐
    object  ensemble  meshgen  communication  io  remeshing  bvh  topology_change
       └─────────┴─────────┴───────────┴───────┴─────┴────────┴──────┘      layer 3
@@ -54,6 +60,10 @@ The module-to-module dependencies at layer 3 worth naming:
 - **bvh → communication.** The distributed contact pipeline needs the spatial
   halo, which `src/communication/spatial_halo.c` supplies as a standalone shadow
   object per body.
+- **correction → ensemble, communication, geometry.** The per-body reductions,
+  the ghost exchange and the shared displacement kernel MFTLBodyVolumeDisplacement();
+  it calls nothing of the remesher, which is the point of the module. Its own MPI
+  (statistics and the colour flags) is confined to `src/correction/correction_comm.c`.
 - **topology_change → bvh, meshgen, ensemble, communication, remeshing.** The one
   module that is a CLIENT of the others by design: detection is the contact
   pipeline with self-pairs, extraction is the marching cubes generator, ids come
@@ -61,6 +71,14 @@ The module-to-module dependencies at layer 3 worth naming:
   optionally, MFTLRemeshEnsemble(). Its public header includes only
   `mftl_types.h`; the dependencies are in its sources, and all of its MPI is in
   `src/topology_change/topo_comm.c`.
+- **coupling → ensemble, geometry.** Markers are read from the bodies a rank
+  holds; nothing else of the library is a client of it. All of its MPI is in
+  `src/coupling/coupling_comm.c`, on its own duplicate of the ensemble's
+  communicator.
+- **settings → every module with a parameter block.** It embeds
+  #MFTL_RemeshParameters, #MFTL_TopologyOptions, #MFTL_BVHBuildParams and
+  #MFTL_VtkOptions by value, which is why it is a layer of its own: no layer-3
+  header may include another. No module includes it back.
 
 ---
 
@@ -117,6 +135,21 @@ marching cubes on the partition as it stands, component labelling, dense ids, an
 a Newton volume correction. Nothing migrates, and the reconstructed surface is
 the same at every process count.
 
+### @ref mftl_mod_correction "correction"
+Volume-conserving corrections a solver calls between flow steps, outside the
+remesher so its back-projection keeps them: TSUR3D removal of grid-scale
+undulations, exact per edge and distributed without a gather, and the Newton
+volume correction that restores each body's reference volume -- a per-body
+value that travels with redistribution and that topology changes hand on.
+
 ### @ref mftl_mod_io "io"
 VTK legacy dump, and the parallel VTK XML writer: ASCII or raw binary with one
 file per rank, or one shared raw-binary file written with MPI-IO.
+
+### @ref mftl_mod_settings "settings"
+Every runtime option in one struct, #MFTL_Settings, whose sections embed the
+parameter blocks the modules already take. Filled from a TOML-subset file and
+`section.key=value` command-line overrides, validated with the line and the key
+that was probably meant, read on rank 0 and broadcast as text so every rank
+holds the same struct. Every key is declared once, in a table the manual's
+settings reference is generated from.

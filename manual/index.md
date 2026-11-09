@@ -13,6 +13,7 @@ built to carry a front through a flow solver.
 
 [What MFTL is](overview.md){ .md-button .md-button--primary }
 [Build it](guide/building.md){ .md-button }
+[:material-tune-variant: All settings](settings.md){ .md-button .mftl-button-settings }
 [API reference](api/index.md){ .md-button }
 { .mftl-hero-actions }
 
@@ -35,7 +36,7 @@ built to carry a front through a flow solver.
 
     ---
 
-    CMake, the three build modes, the sixty-eight CTest entries, and why
+    CMake, the three build modes, the seventy-two CTest entries, and why
     `-march=native` is off by default.
 
     [:octicons-arrow-right-24: Build and run the suite](guide/building.md)
@@ -62,6 +63,43 @@ built to carry a front through a flow solver.
 
 ---
 
+## Configure a run
+
+<div class="grid" markdown>
+
+<div markdown>
+
+Every runtime option of the library &mdash; the domain and its decomposition,
+remeshing, topology changes, contact, output &mdash; is set from **one settings
+file per simulation**, and any of it can be overridden on the command line.
+
+The reference lists every key with its default, what it accepts and what it
+does, with a filter to find it and a complete file to start from. A misspelled
+key is an error that names the key you meant, never a silent default.
+
+[:material-tune-variant: Browse all settings](settings.md){ .md-button .mftl-button-settings }
+
+</div>
+
+```toml
+# run.toml
+[remesh]
+every             = 1
+target_length     = 0.0      # hold the starting resolution
+parallel_strategy = "auto"
+
+[topology]
+every = 5                    # breakup and coalescence
+
+[output]
+every  = 10
+prefix = "out/run"
+```
+
+</div>
+
+---
+
 ## Go deeper
 
 <div class="grid cards" markdown>
@@ -75,7 +113,7 @@ built to carry a front through a flow solver.
 
     [:octicons-arrow-right-24: What must stay true](guide/invariants.md)
 
--   :material-view-module-outline:{ .lg .middle } &nbsp; __Eleven modules__
+-   :material-view-module-outline:{ .lg .middle } &nbsp; __Twelve modules__
 
     ---
 
@@ -112,13 +150,14 @@ built to carry a front through a flow solver.
 ## The shape of a run
 
 ```
-MFTLEnsembleCreate → MFTLEnsembleAddObject → MFTLGenerateSphere → MFTLRedistribute
+MFTLSettingsLoad → MFTLSettingsCreateEnsemble → MFTLEnsembleAddObject → MFTLGenerateSphere
+  → MFTLSettingsResolve → MFTLRedistribute
 per timestep:
   move owned vertices → MFTLUpdateGhostPositions → MFTLEnsembleComputeTriangleGeometry
   → MFTLRedistribute → MFTLEnsembleUpdate
-  → MFTLRemeshEnsemble / MFTLEnsembleApplyTopologyChanges   (when needed)
-  → MFTLEnsembleIntersectObjects                           (contact, when needed)
-  → MFTLWriteVtu                                            (output)
+  → MFTLRemeshEnsemble / MFTLEnsembleApplyTopologyChanges   (every cfg.remesh / cfg.topology .every steps)
+  → MFTLEnsembleIntersectObjects                           (contact, every cfg.contact.every steps)
+  → MFTLWriteVtu                                            (output, every cfg.output.every steps)
 ```
 
 The order is not decorative. Three of those steps are load-bearing and fail

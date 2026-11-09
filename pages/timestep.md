@@ -103,6 +103,30 @@ structural check passed (`test_leveque_parallel_conserves`).
 
 ---
 
+# With remeshing and front corrections {#ts_corrections}
+
+```c
+/* 1 */ advect the owned vertices;
+/* 2 */ MFTLUpdateGhostPositions(ens);
+/* 3 */ MFTLEnsembleRemoveUndulations(ens, &und, &ust);        /* optional: TSUR3D */
+/* 4 */ MFTLEnsembleComputeTriangleGeometry(ens);
+/* 5 */ MFTLRemeshEnsemble(ens, &params, &rst);                 /* or MFTLRedistribute(ens) */
+/* 6 */ MFTLEnsembleApplyTopologyChanges(ens, &topo, &tst);     /* optional */
+/* 7 */ MFTLEnsembleCorrectVolumes(ens, &vol, &vst);            /* LAST */
+```
+
+with MFTLEnsembleSetReferenceVolumes() called once before the loop. The two
+corrections are separate calls on purpose: the remesher's Phong back-projection
+moves its smoothed vertices back onto the surface the call RECEIVED, so a normal
+correction made inside the call would be undone. Undulations come from the
+advection and are removed before the remesh, which then keeps the smoothing; the
+volume correction restores, last, what the advection, the remesh and a topology
+change moved -- once per step is enough, a second call after step 2 changes the
+shape at second order only. The reference volume travels with each body through
+step 5's redistribution and is handed on by step 6. See @ref mftl_mod_correction.
+
+---
+
 # What a redistribution leaves behind {#ts_redist_leaves}
 
 @warning **Redistribution invalidates all cached geometry except the vertex
@@ -178,6 +202,8 @@ including ranks that hold no body:
   MFTLExtendSpatialHaloNearBodies(), MFTLEnsembleIntersectObjects()
 - MFTLTopologyDetectEvents(), MFTLEnsembleReconstructBodies(),
   MFTLEnsembleApplyTopologyChanges()
+- MFTLSettingsLoad(), MFTLSettingsLoadArgs(), MFTLSettingsCreateEnsemble(),
+  MFTLSettingsResolve()
 
 **Deliberately local** — each rank works on its own partition:
 
@@ -193,6 +219,9 @@ including ranks that hold no body:
   MFTLTopologyLattice()
 - MFTLWriteVtk()
 - MFTL_GenerateLBVH(), MFTL_RefitLBVH(), MFTL_IntersectObjects()
+- MFTLSettingsDefaults(), MFTLSettingsParse(), MFTLSettingsSet(),
+  MFTLSettingsGet(), MFTLSettingsCheck(), MFTLSettingsWrite(),
+  MFTLSettingsChooseCuts()
 
 `test_vertex_normals_np3` exists to make an accidentally-introduced collective in
 the local list deadlock in CI.
@@ -272,3 +301,35 @@ reconstructs closes with MFTLRedistribute() (and the remesh in
 `MFTL_TopologyOptions::remesh`), so every pointer rule above applies. Bodies can
 appear and disappear: `n_bodies_global` is the size of the body-id space, and
 ids of vanished bodies are never reused.
+
+---
+
+# Driving the loop from a settings file {#ts_settings}
+
+Every block the calls above take — #MFTL_RemeshParameters,
+#MFTL_TopologyOptions, #MFTL_BVHBuildParams, #MFTL_VtkOptions — is a section of
+#MFTL_Settings, and each section carries an `every` that says how often the call
+is due. A loop configured by a file therefore reads:
+
+```c
+for (int step = 0; step < n_steps; ++step)
+{
+  /* move owned vertices, MFTLUpdateGhostPositions, triangle geometry (ghosts included) */
+  if (MFTLSettingsDue(cfg.remesh.every, step)) MFTLRemeshEnsemble(ens, &cfg.remesh.params, &st);
+  else                                         MFTLRedistribute(ens);
+  if (MFTLSettingsDue(cfg.topology.every, step)) MFTLEnsembleApplyTopologyChanges(ens, &cfg.topology.options, &ts);
+  if (MFTLSettingsDue(cfg.contact.every, step))  MFTLEnsembleIntersectObjects(ens, &cfg.contact.params, cb, data);
+  if (MFTLSettingsDue(cfg.output.every, step))   MFTLWriteVtu(ens, name, &cfg.output.vtk);
+}
+```
+
+The order is the one this page derives; the settings change how often each call
+runs, never where it goes. Two things are specific to the file-driven form.
+MFTLSettingsResolve() must run after the bodies exist and before the loop, because
+the lengths left at 0 — the remesh target and everything derived from it — are
+measured from the mesh. And because the remesh strategy, the phase budget and
+`redistribute.skip_unchanged_bodies` change which collectives run, the struct
+must be identical on every rank: load it with MFTLSettingsLoad(), and change a
+field afterwards only identically everywhere (MFTLSettingsResolve() checks, and
+names the first key that differs). `examples/settings_driven_run.c` is the
+complete program; @ref mftl_mod_settings has the file format and every rule.

@@ -152,8 +152,9 @@ construction. A header may only include headers from a strictly lower layer:
 | 0 | @ref mftl_constants.h, @ref mftl_memory.h, @ref mftl_vectoroperations.h, @ref mftl_arrayfunctions.h | macros and plain-C helpers, no MFTL types |
 | 1 | @ref mftl_types.h | all structs — the single place they are defined |
 | 2 | @ref mftl_topology.h, @ref mftl_geometry.h | inline accessors over layer 1 |
-| 3 | @ref mftl_object.h, @ref mftl_ensemble.h, @ref mftl_meshgen.h, @ref mftl_communication.h, @ref mftl_io.h, @ref mftl_remeshing.h, @ref mftl_bvh.h, @ref mftl_topology_change.h | module APIs |
-| 4 | @ref mftl_core.h | umbrella for application code; library sources must not use it |
+| 3 | @ref mftl_object.h, @ref mftl_ensemble.h, @ref mftl_meshgen.h, @ref mftl_communication.h, @ref mftl_io.h, @ref mftl_remeshing.h, @ref mftl_bvh.h, @ref mftl_topology_change.h, @ref mftl_correction.h, @ref mftl_coupling.h | module APIs |
+| 4 | @ref mftl_settings.h | run configuration: the one header that sees every module's parameter block |
+| 5 | @ref mftl_core.h | umbrella for application code; library sources must not use it |
 
 Two checks worth running after touching headers:
 

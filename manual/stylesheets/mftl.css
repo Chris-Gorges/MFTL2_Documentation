@@ -299,3 +299,94 @@ body[data-md-color-primary] .md-typeset h1#mftl {
   text-decoration: underline;
   text-underline-offset: 0.15em;
 }
+
+/* ── Settings reference (settings.md) ──────────────────────────────────────
+ *
+ *  The landing page's settings button carries the accent, because it is the
+ *  one a new user of the library needs first after the overview. On the
+ *  reference itself, a filter box above the tables (manual/javascripts/
+ *  settings-filter.js) and tables whose first column never wraps a key name.
+ * ------------------------------------------------------------------------- */
+
+/* Material draws a secondary button in the primary colour, which on the slate
+ * scheme is the navy of the header -- a button nearly invisible on the dark
+ * page. The link colour is what the eye already reads as "clickable" there. */
+[data-md-color-scheme="slate"] .md-typeset .md-button:not(.md-button--primary):not(.mftl-button-settings) {
+  color: var(--md-typeset-a-color);
+}
+
+[data-md-color-scheme="slate"] .md-typeset .md-button--primary {
+  border-color: var(--md-primary-fg-color--light);
+  background-color: var(--md-primary-fg-color--light);
+}
+
+.md-typeset .md-button.mftl-button-settings {
+  border-color: var(--md-accent-fg-color);
+  color: var(--md-accent-fg-color);
+}
+
+.md-typeset .md-button.mftl-button-settings:hover,
+.md-typeset .md-button.mftl-button-settings:focus {
+  background-color: var(--md-accent-fg-color);
+  border-color: var(--md-accent-fg-color);
+  color: var(--md-accent-bg-color);
+}
+
+.mftl-settings-filter {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin: 0.6em 0 1.2em;
+}
+
+.mftl-settings-filter input {
+  flex: 1 1 auto;
+  max-width: 34rem;
+  padding: 0.55em 0.8em;
+  font: inherit;
+  font-size: 0.8rem;
+  color: var(--md-default-fg-color);
+  background: var(--mftl-card-bg);
+  border: 1px solid var(--mftl-rule);
+  border-radius: 0.3rem;
+  outline: none;
+}
+
+.mftl-settings-filter input:focus {
+  border-color: var(--md-accent-fg-color);
+  box-shadow: 0 0 0 3px var(--md-accent-fg-color--transparent);
+}
+
+.mftl-settings-filter-count {
+  font-size: 0.68rem;
+  color: var(--md-default-fg-color--light);
+  white-space: nowrap;
+}
+
+.md-typeset .mftl-settings-section table:not([class]) td:first-child {
+  white-space: nowrap;
+}
+
+/* Keys, defaults and keywords are tokens: never broken in the middle. */
+.md-typeset .mftl-settings-section table:not([class]) td:nth-child(3),
+.md-typeset .mftl-settings-section table:not([class]) td:nth-child(4) code,
+.md-typeset .mftl-settings-section table:not([class]) td:first-child code {
+  white-space: nowrap;
+  word-break: normal;
+}
+
+.md-typeset .mftl-settings-cpath {
+  display: inline-block;
+  margin-top: 0.35em;
+  opacity: 0.75;
+}
+
+.md-typeset .mftl-settings-cpath code {
+  font-size: 0.9em;
+  word-break: break-all;
+}
+
+.md-typeset .mftl-settings-empty {
+  font-style: italic;
+  color: var(--md-default-fg-color--light);
+}

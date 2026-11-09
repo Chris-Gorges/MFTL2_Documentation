@@ -23,7 +23,7 @@ Building, testing and generating this manual {#mftl_page_building}
 
 @note **The library and its documentation are two repositories.** MFTL itself
       carries no Doxyfile, no MkDocs configuration and no documentation
-      toolchain — only the doc comments in its sources, its eleven module
+      toolchain — only the doc comments in its sources, its fourteen module
       `README.md` files and the measurement document `docs/analysis.md`.
       Everything that *renders* those lives in **MFTL2_Documentation**, which
       reads the library from wherever it is checked out. Nothing below that
@@ -93,8 +93,17 @@ cd build && ctest --output-on-failure
 cd build && ctest --output-on-failure -R object    # one module
 ```
 
-Sixty-eight CTest entries, built on `tests/test_utils.h` (`RUN_TEST`,
+Seventy-two CTest entries, built on `tests/test_utils.h` (`RUN_TEST`,
 `TEST_ASSERT*`, `TEST_REPORT`).
+
+Four of them guard the run configuration: `test_settings` (np = 1 and 2) holds
+the key table to the struct members it names and to the modules' own defaults,
+and checks the file format, the error messages and the collective loading;
+`test_settings_driven_run_conserves` runs `examples/settings_driven_run.c` from
+its shipped settings file with command-line overrides and checks volume,
+winding and Euler characteristic; and one `test_shipped_settings_<name>` per
+file in `examples/settings/` runs `mftl_settings check` on it, so a renamed key
+fails in CI rather than in somebody's job.
 
 @note **Run the suite in the `--debug` build too.** `tests/test_object.c`
       deliberately writes the last addressable element of every pool array, so an
@@ -292,7 +301,8 @@ rewrites Doxygen's Markdown dialect into Material's at build time:
 |---|---|---|
 | Overview | `pages/mainpage.md` | documentation |
 | Guide | `pages/architecture.md`, `building.md`, `timestep.md`, `invariants.md` | documentation |
-| Modules | `pages/modules.md` and the eleven `src/*/README.md` | both |
+| Modules | `pages/modules.md` and the fourteen `src/*/README.md` | both |
+| Settings reference | the key table `src/settings/settings_keys.c`, via `mkdocs/settings_page.py` | library |
 | Analysis | `docs/analysis.md` | library |
 | API reference | Doxygen XML, via mkdoxy | library |
 | `/doxygen/` | `build/docs/html`, copied in by `mkdocs/hooks.py` | documentation |
