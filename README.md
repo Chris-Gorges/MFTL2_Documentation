@@ -208,3 +208,8 @@ rewrites Doxygen's Markdown dialect at build time, resolving `@ref`,
 - **`STRIP_FROM_INC_PATH` lists both `include/` and `src/`.** Without the
   second, the page of a type declared in an internal header shows the absolute
   path of the machine that built the manual.
+
+## License
+
+Copyright 2025–2026 Christian Gorges and Berend van Wachem. Licensed under the
+[Apache License 2.0](LICENSE), like [MFTL2](https://github.com/Chris-Gorges/MFTL2) itself.
