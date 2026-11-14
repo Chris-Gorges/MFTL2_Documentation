@@ -218,7 +218,7 @@ including ranks that hold no body:
   MFTLBuildMeshFromLevelSet(), MFTLLabelConnectedComponents(),
   MFTLTopologyLattice()
 - MFTLWriteVtk()
-- MFTL_GenerateLBVH(), MFTL_RefitLBVH(), MFTL_IntersectObjects()
+- MFTLGenerateLBVH(), MFTLRefitLBVH(), MFTLIntersectObjects()
 - MFTLSettingsDefaults(), MFTLSettingsParse(), MFTLSettingsSet(),
   MFTLSettingsGet(), MFTLSettingsCheck(), MFTLSettingsWrite(),
   MFTLSettingsChooseCuts()

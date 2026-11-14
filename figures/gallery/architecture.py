@@ -58,10 +58,10 @@ def pool_layout():
     note(ax, x0 + 2.6, y - 0.24, "every sub-array starts on a 64 B cache line", size=6.8)
 
     # legend
-    lx, ly = 3.0, 3.33
-    for i, ((fc, ec), txt) in enumerate(((AOS, "AoS: topology and identity"), (SOA, "SoA: geometry"),
+    lx, ly = 1.75, 3.33
+    for i, ((fc, ec), txt) in enumerate(((AOS, "AoS: topology and identity"), (SOA, "one array per field: geometry"),
                                          (DER, "derived connectivity (a cache)"))):
-        xx = lx + [0.0, 1.78, 2.86][i]
+        xx = lx + [0.0, 1.72, 3.5][i]
         box(ax, xx, ly - 0.06, 0.16, 0.13, fc=fc, ec=ec, lw=0.8, r=0.02)
         note(ax, xx + 0.22, ly, txt, ha="left", size=6.9, color=C.ink)
 
@@ -84,7 +84,7 @@ def pool_layout():
     note(ax, (xa + xb) / 2, y - 0.2, "a collapse: a few records, every field of each", size=6.8, color=C.coral)
     note(ax, x0 + n * (cw + 0.04) + 0.02, y + 0.17, "target · twin · id · flags", ha="left", size=6.6)
 
-    # SoA: the update kernel streams one array
+    # one array per field, vectors interleaved: the update kernel streams one array
     y = 0.1
     note(ax, x0 - 0.12, y + 0.14, "verts.pos", ha="right", size=7.2, color=C.ink, fontfamily="monospace")
     for i in range(27):

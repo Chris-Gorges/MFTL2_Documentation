@@ -661,7 +661,7 @@
  *
  * Bounding boxes are then fitted bottom-up. When only the geometry moved, the
  * refit alone is valid and the sort and split are skipped &mdash; that is
- * MFTL_RefitLBVH().
+ * MFTLRefitLBVH().
  *
  * ## Periodicity is two problems, and they need two different fixes
  *
@@ -702,7 +702,7 @@
  *   \end{pmatrix}
  * \f]
  *
- * MFTL_Orient3D() is Shewchuk-adaptive: it evaluates the determinant in floating
+ * MFTLOrient3D() is Shewchuk-adaptive: it evaluates the determinant in floating
  * point together with a running error bound, and only escalates to exact
  * expansion arithmetic when the bound does not separate the result from zero.
  *

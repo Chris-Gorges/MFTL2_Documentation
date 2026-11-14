@@ -434,7 +434,7 @@ other and every cross-rank contact force is applied twice.
 against the answer computed on one rank while it still held the whole mesh, which
 is the only check that rules out both at once.
 
-## MFTL_Orient3D is adaptive; nothing else in src/bvh/ is {#inv_adaptive}
+## MFTLOrient3D is adaptive; nothing else in src/bvh/ is {#inv_adaptive}
 
 It is the only predicate whose **sign** decides the answer — Guigue–Devillers
 branches on it up to **eight** times per pair (six classify the corners against
@@ -447,7 +447,7 @@ continuously.
 answer is not one-sided: the plain determinant did not misclassify once in 20 000
 samples at gaps down to \f$10^{-12}\f$ of the body size (three orders below where
 a lubrication model works), and only fails at \f$10^{-14}\ldots10^{-16}\f$. It is
-kept because the cost is ≤ 6.2 % of a full MFTL_TriTriProximity() call (2.00× on
+kept because the cost is ≤ 6.2 % of a full MFTLTriTriProximity() call (2.00× on
 the predicate, but the narrow phase is dominated by its fifteen distance
 sub-tests) and the failure it removes is silent.
 
