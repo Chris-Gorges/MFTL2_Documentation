@@ -211,5 +211,6 @@ rewrites Doxygen's Markdown dialect at build time, resolving `@ref`,
 
 ## License
 
-Copyright 2025–2026 Christian Gorges and Berend van Wachem. Licensed under the
-[Apache License 2.0](LICENSE), like [MFTL2](https://github.com/Chris-Gorges/MFTL2) itself.
+Copyright 2025–2026 Christian Gorges, Fabian Denner and Berend van Wachem.
+Licensed under the [Apache License 2.0](LICENSE), like
+[MFTL2](https://github.com/Chris-Gorges/MFTL2) itself.

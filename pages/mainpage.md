@@ -182,10 +182,11 @@ the library) rather than the code comments alone.
 
 ---
 
-## Author and licence
+## Authors and licence
 
-Christian Gorges. The radix sort in `src/arrayfunctions/` derives from Cameron
-Hart's zlib-licensed implementation (its notice is preserved in the source
-file), and the adaptive orientation predicate in `src/bvh/bvh_predicates.c`
-follows Jonathan Shewchuk's public-domain robust predicates (Discrete Comput.
-Geom. 18, 1997).
+Christian Gorges (principal developer), Fabian Denner (co-supervisor) and
+Berend van Wachem (supervisor); licensed under the Apache License 2.0. The
+radix sort in `src/arrayfunctions/` derives from Cameron Hart's zlib-licensed
+implementation (its notice is preserved in the source file), and the adaptive
+orientation predicate in `src/bvh/bvh_predicates.c` follows Jonathan
+Shewchuk's public-domain robust predicates (Discrete Comput. Geom. 18, 1997).
