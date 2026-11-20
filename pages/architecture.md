@@ -202,7 +202,9 @@ type:
 | | one object, LOCAL, no MPI | every object, COLLECTIVE |
 |---|---|---|
 | triangles | MFTLComputeTriangleGeometry() (`src/geometry/`) | MFTLEnsembleUpdate() (`src/ensemble/`) |
-| vertices | MFTLComputeVertexNormals() (`src/geometry/`) | MFTLEnsembleUpdateVertexNormals() (`src/ensemble/`) |
+| vertices | MFTLComputeVertexNormals(), MFTLComputeVertexNormalAt() (`src/geometry/`) | MFTLEnsembleUpdateVertexNormals() (`src/ensemble/`) |
+| curvature | MFTLComputeVertexCurvature() (`src/geometry/`) | MFTLEnsembleComputeCurvature() (`src/ensemble/`) |
+| surface tension | MFTLComputeSurfaceTension() (`src/geometry/`) | MFTLEnsembleComputeSurfaceTension(), MFTLEnsembleSurfaceTensionStats() (`src/ensemble/`) |
 
 An `MFTLEnsemble*` function is a loop over the object list plus exactly the
 collective its result needs; the arithmetic belongs to `src/geometry/`. The

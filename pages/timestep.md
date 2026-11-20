@@ -160,14 +160,16 @@ credits the redistribution with a saving it has not finished paying for.
 
 # Vertex normals and the vertex-complete halo {#ts_vertex_normals}
 
-MFTLComputeVertexNormals() accumulates
+MFTLComputeVertexNormals() with #MFTL_NORMAL_WEIGHT_AREA accumulates
 
 \f[
   \vect{N}_v = \frac{\sum_{t \ni v} A_t\, \hat{\vect{n}}_t}
                     {\norm{\sum_{t \ni v} A_t\, \hat{\vect{n}}_t}}
 \f]
 
-over **all** triangles including ghosts. An owned vertex therefore gets the exact
+over **all** triangles including ghosts (#MFTL_NORMAL_WEIGHT_ANGLE puts the
+corner angle in place of \f$A_t\f$; #MFTL_NORMAL_WEIGHT_FIT fits a paraboloid to
+the one-ring, also a one-ring quantity). An owned vertex therefore gets the exact
 answer *iff* every triangle incident to it is present locally.
 
 That is a stronger requirement on redistribution than "one layer of edge-adjacent
@@ -202,6 +204,10 @@ including ranks that hold no body:
   MFTLExtendSpatialHaloNearBodies(), MFTLEnsembleIntersectObjects()
 - MFTLTopologyDetectEvents(), MFTLEnsembleReconstructBodies(),
   MFTLEnsembleApplyTopologyChanges()
+- MFTLEnsembleRemoveUndulations(), MFTLEnsembleCorrectVolumes(),
+  MFTLEnsembleSetReferenceVolumes()
+- MFTLEnsembleComputeCurvature(), MFTLEnsembleComputeSurfaceTension(),
+  MFTLEnsembleSurfaceTensionStats()
 - MFTLSettingsLoad(), MFTLSettingsLoadArgs(), MFTLSettingsCreateEnsemble(),
   MFTLSettingsResolve()
 
@@ -211,7 +217,9 @@ including ranks that hold no body:
 - MFTLBuildIndexedMesh(), MFTLBuildTopologyFromIndexList(),
   MFTLGenerateSphereLocal()
 - MFTLComputeTriangleGeometry(), MFTLEnsembleComputeTriangleGeometry(),
-  MFTLComputeVertexNormals()
+  MFTLComputeVertexNormals(), MFTLComputeVertexNormalAt()
+- MFTLComputeVertexCurvature(), MFTLComputeSurfaceTension(),
+  MFTLRemoveUndulationsObject()
 - MFTLRemeshObject(), MFTLRemeshMarkFrozen(), MFTLDilateFrozenBand(),
   MFTLDetectFeatures(), MFTLSmoothTangential(), MFTLMeanEdgeLength()
 - MFTLRasterizeSignedDistance(), MFTLExtractLevelSet(),

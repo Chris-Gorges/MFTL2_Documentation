@@ -97,9 +97,12 @@ Twin rebuilding, boundary marking, integrity checking. The navigation itself is
 `static inline` in the header, because it is one or two arithmetic ops.
 
 ### @ref mftl_mod_geometry "geometry"
-Triangle area/normal/centroid, area- or angle-weighted vertex normals, the closest
-point on a triangle, and signed-distance rasterisation onto a lattice window —
-all periodic-aware, all **local**. The collective wrappers live in `ensemble`.
+Triangle area/normal/centroid; vertex normals by one rule with a two-level choice
+(from the triangles, area- or angle-weighted, or a one-ring fit), for the whole
+pool or one vertex; the signed curvature and the surface-tension force; the
+closest point on a triangle, signed-distance rasterisation onto a lattice window,
+and small least-squares fits — all periodic-aware, all **local**. The collective
+wrappers live in `ensemble`.
 
 ### @ref mftl_mod_meshgen "mesh_creation"
 Indexed-list → half-edge conversion, the icosphere generator built on top of it,
@@ -107,8 +110,10 @@ and marching cubes with a table GENERATED from one face rule and an extractor
 that names every vertex by the lattice edge it lies on.
 
 ### @ref mftl_mod_ensemble "ensemble"
-The library handle, the MPI topology setup, and the two fused per-timestep
-collectives.
+The library handle, the MPI topology setup, the two fused per-timestep
+collectives, the per-body reductions over each body's holders, and the
+collective forms of the geometry kernels: body integrals, curvature and the
+surface-tension force, each with exactly the exchange its result needs.
 
 ### @ref mftl_mod_communication "communication"
 Redistribution, ghost synchronisation, the non-blocking exchange engine, and the

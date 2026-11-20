@@ -42,8 +42,14 @@ the API by architectural layer, **Data Structures** lists every struct, and
 - **Derived per-triangle arrays** and the `MFTL_FOREACH_*` hot-loop iterators
 - **Morton renumbering** of the pools
 - **Periodic-aware geometry** — the fused per-timestep geometry + per-body
-  quality pass, area- or angle-weighted vertex normals, closest point on a
-  triangle, signed-distance rasterisation
+  quality pass, vertex normals (area- or angle-weighted, or a second-order
+  one-ring fit), closest point on a triangle, signed-distance rasterisation
+- **Surface tension and signed curvature** — Tryggvason's Frenet vertex and
+  element forces (the book's vertex form is the exact gradient of the surface
+  energy: no net force or torque, work equal to the energy lost), Marangoni
+  stresses from a varying surface tension, rim modes for open surfaces; the
+  signed curvature with its Gaussian and principal parts by Meyer et al.'s
+  cotangent operators or a one-ring fit, pointwise convergent with fitted normals
 - **Mesh construction** — indexed lists, icospheres, and marching cubes with a
   generated, crack-free case table
 - **Per-body collectives over each body's holders** — reductions and exclusive
