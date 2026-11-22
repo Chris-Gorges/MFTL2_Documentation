@@ -148,18 +148,26 @@ def halo_boundary():
 
 
 def circular_extent(pieces):
-    """Centre and half-width of a set of intervals on [0, 1), measured the way the halo does.
+    """Centre and half-width of a set of intervals on [0, 1), measured the way the library does.
 
-    The extent is taken in the raw frame and in one shifted by half a period,
-    keeping the tighter; exact while the share is narrower than half the period.
+    MFTLPeriodicExtentResolve, which the halo uses: frames cut at 0 and half a
+    period, the half frame kept when strictly tighter; the quarter frames read
+    only when neither is narrower than 3/4. Exact while the share is narrower
+    than three quarters of the period.
     """
-    best = None
-    for shift in (0.0, 0.5):
+
+    def frame(shift):
         ends = [(u + shift) % 1.0 for p in pieces for u in (p[0], p[1] - 1e-9)]
-        lo, hi = min(ends), max(ends)
-        if best is None or hi - lo < best[1] - best[0]:
-            best = (lo, hi, shift)
-    lo, hi, shift = best
+        return min(ends), max(ends), shift
+
+    lo, hi, shift = frame(0.0)
+    l1, h1, s1 = frame(0.5)
+    if h1 - l1 < hi - lo:
+        lo, hi, shift = l1, h1, s1
+    if not hi - lo < 0.75:
+        for lf, hf, sf in (frame(0.25), frame(0.75)):
+            if hf - lf < 0.75 and hf - lf < hi - lo:
+                lo, hi, shift = lf, hf, sf
     return ((lo + hi) / 2 - shift) % 1.0, (hi - lo) / 2
 
 
